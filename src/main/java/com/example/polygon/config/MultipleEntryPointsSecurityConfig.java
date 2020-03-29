@@ -1,8 +1,11 @@
 package com.example.polygon.config;
 
+import com.example.polygon.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -14,25 +17,19 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
 @EnableWebSecurity
-public class MultipleEntryPointsSecurityConfig {
-    @Bean
-    public UserDetailsService userDetailsService() throws Exception {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User
-                .withUsername("user")
-                .password(encoder().encode("111"))
-                .roles("USER").build());
-        manager.createUser(User
-                .withUsername("admin")
-                .password(encoder().encode("111"))
-                .roles("ADMIN").build());
-        return manager;
+public class MultipleEntryPointsSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private PasswordEncoder encoder;
+
+    @Autowired
+    UserService userService;
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userService)
+                .passwordEncoder(encoder);
     }
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Configuration
     @Order(1)
@@ -48,6 +45,7 @@ public class MultipleEntryPointsSecurityConfig {
     }
 
     @Configuration
+    @Order(2)
     public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
         @Override
