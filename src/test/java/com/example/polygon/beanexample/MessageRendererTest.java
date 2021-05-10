@@ -1,10 +1,11 @@
 package com.example.polygon.beanexample;
 
+import com.example.polygon.config.ConfigApp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +18,7 @@ class MessageRendererTest {
 
     @Test
     void render() {
-        ApplicationContext  context = new ClassPathXmlApplicationContext("context.xml");
+        ApplicationContext  context = new AnnotationConfigApplicationContext(ConfigApp.class);
         MessageRenderer renderer = context.getBean("render", MessageRenderer.class);
         renderer.render();
     }
