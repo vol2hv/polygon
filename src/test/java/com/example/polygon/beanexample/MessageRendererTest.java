@@ -15,7 +15,8 @@ class MessageRendererTest {
 
     @Test
     void render() {
-        MessageRenderer renderer = new SimpleMessageRenderer(new SimpleMessageProvider());
+        MessageProvider provider = MessageFactory.getProvider();
+        MessageRenderer renderer = MessageFactory.getRenderer();
         renderer.render();
     }
 }
